@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./fonts.css">
+</head>
+
+<body onload="renderAllPokemons()">
+    
+<!-- ================================================= POKEDEX HOMESCREEN =================================== -->
+<!-- ======================================== LOGO ==================================== -->
+<div class="logo">
+    <img src="./img/Pokédex Logo.png">
+</div>
+
+
+<div class="homeScreenContainer" id="homeScreenContainer">
+    <div class="pokemonContainer" id="pokemonContainer">
+<!-- =============================== POKEMON COVERCARD - TEMPLATE====================== -->
+        <div id="container" class="container">
+            <div class="search">
+                <div>
+                    <div>
+                    <img src="./img/icons/search.png" class="icon"/>
+                    </div>
+                    <div>
+                    <input id="search" onkeydown="search()" type="text" placeholder="Search"/>
+                    </div>
+                </div>
+                <div class="close" onclick="closePokedex()">
+                    <img src="./img/icons/close.png">
+                    <div>Close Pokédex</div>
+                </div>
+            </div>
+
+            <div class="pokemonList">
+                <div id="allPokemons">
+<!--                <div class="pokemonCard" onclick="openPokemonInfo()">
+                        <div>
+                            <div class="favorite">
+                                <img src="./img/icons/favorite empty.png">
+                            </div>
+                            <div class="indexNumber"># <span>0001</span></div>
+                        </div>
+                        <div class="pokemonImg">
+                            <img src="./img/pikatchu.jpg">
+                        </div>
+                        <div>
+                            <div class="name">Pikatchu</div>
+                            <div class="type">Electric</div>
+                        </div>
+                    </div> -->
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ================================================================================ -->
+
+    <div class="subContainer" id="subContainer">
+        <div class="upperHalf" id="upperHalf">
+            <div class="corner">
+                <img id="corner1" src="./img/top left corner2.png">
+            </div>
+            <div class="corner">
+                <img id="corner2" src="./img/top right corner2.png">
+            </div>
+        </div>
+        <div class="startButton" id="startButton" onclick="openPokedex()">
+            <img src="./img/icons/pokeball.png">
+        </div>
+        <div class="lowerHalf" id="lowerHalf">
+            <div class="corner">
+                <img id="corner3" src="./img/bottom left corner2.png">
+            </div>
+            <div class="corner">
+                <img id="corner4" src="./img/bottom right corner2.png">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="bigPokemonCardContainer" class="bigPokemonCardContainer" onclick="closePokemonCard()">
+<!-- <div class="bigPokemonCard">
+        <div class="cardHeader">
+            <div>
+                <div class="favorite">
+                    <img src="./img/icons/favorite empty.png">
+                </div>
+                <div class="indexNumberBig"># <span>0001</span></div>
+            </div>
+            <div class="pokemonImgBig">
+                <img src="./img/pikatchu.jpg">
+            </div>
+            <div>
+                <div class="nameBig">Pikatchu</div>
+                <div class="typeBig">Electric</div>
+            </div>
+        </div>
+
+        <div class="pokemonDataContainer" id="pokemonDataContainer">
+            <div>
+                <div class="info">
+                    <div>Info</div>
+                    <div>
+                        <img src="./img/icons/info.png">
+                    </div>
+                </div>
+
+                <div class="infoContent" id="infoContent">
+                <!-- ==================  Info TEMPLATE  ======================== 
+                    <div class="infoData">
+                        <div>
+                            <div>Spicies</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Height</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Weight</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Abilities</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Weakness</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Genders</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+            <div>
+                <div class="info">
+                    <div>Stats</div>
+                    <div>
+                        <img src="./img/icons/data.png">
+                    </div>
+                </div>
+
+                <div class="infoContent" id="infoContent">
+                <!-- ==================  Stats TEMPLATE  ======================== 
+                    <div class="infoData">
+                        <div>
+                            <div>HP</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Speed</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+            <div>
+                <div class="info">
+                    <div>Evolution</div>
+                    <div>
+                        <img src="./img/icons/increase.png">
+                    </div>
+                </div>
+
+                <div class="infoContent" id="infoContent">
+                <!-- ==================  Evolution TEMPLATE  ======================== 
+                    <div class="infoData">
+                        <div>
+                            <div>HP</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Speed</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+        </div> 
+    </div>
+</div> -->
+
+ <!-- ========= Evolution Template ================= -->       
+<!--          <div class="evolutionData">
+            <div class="base">
+                <div>
+                    <img src="" alt="">
+                    <div>
+                        <div></div>       
+                        <div></div>       
+                    </div>
+                    <div></div>           
+                </div>
+                <div>
+                    <img src="" alt="">   
+                </div>
+            </div>
+            <div class="first">
+                <div>
+                    <img src="" alt="">
+                    <div>
+                        <div></div>       
+                        <div></div>       
+                    </div>
+                    <div></div>           
+                </div>
+            </div>
+            <div class="second">
+                <div>
+                    <img src="" alt="">
+                    <div>
+                        <div></div>       
+                        <div></div>       
+                    </div>
+                    <div></div>           
+                </div>
+            </div>
+        </div> 
+ -->
+
+    </div>
+</div>
+
+<span id="shadow"></span>
+
+<!-- =============================== POKEMON COVERCARD - TEMPLATE====================== -->
+
+<!-- <div id="container" class="container">
+    <div>
+        <div>
+            <div class="favorite"></div>
+            <div class="indexNumber"></div>
+        </div>
+        <div>
+            <img src="" alt="">
+        </div>
+        <div>
+            <div class="name"></div>
+            <div class="type"></div>
+        </div>
+    </div>
+</div> -->
+
+
+<!-- =============================== POKEMON DETAILED CARD - TEMPLATE====================== -->
+
+
+
+
+
+
+
+
+
+
+<!-- ============================================= BEISPIEL ====================================================== -->    
+<!--     <div id="pokedex">
+        <h1 id="pokemonName"></h1>
+    </div> -->
+    
+    <script src="script.js"></script>
+</body>
+</html>
