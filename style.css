@@ -235,7 +235,7 @@ body {
     width: 100%;
 }
 
-.pokemonList > div {
+.allPokemons {
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -278,6 +278,10 @@ body {
     background-repeat: no-repeat;
 }
 
+.cardHeaderBig {
+    border-radius: 10px 10px 0 0;
+}
+
 .cardHeader > div:first-of-type {
     display: flex;
     justify-content: space-between;
@@ -299,6 +303,12 @@ body {
 
 .favorite > img:hover {
     transform: scale(1.1);
+}
+
+.indexNumber {
+    color: white;
+    -webkit-text-stroke: 0.5px black;
+    font-size: 28px;
 }
 
 .pokemonImg {
@@ -328,6 +338,8 @@ body {
 
 .name {
     font-size: 1.5rem;
+    color: white;
+    -webkit-text-stroke: 0.5px black;
 }
 
 .type {
@@ -335,6 +347,10 @@ body {
     padding: 0.2rem;
     font-size: 0.8rem;
     background-color: rgba(228, 226, 226, 0.973);
+    width: 80px;
+    text-align: center;
+    border: 1px solid white;
+    color: white;
 }
 
 .bigPokemonCardContainer {
@@ -370,6 +386,8 @@ body {
 
 .indexNumberBig {
     font-size: 2rem;
+    color: white;
+    -webkit-text-stroke: 0.5px black;
 }
 
 .pokemonImgBig {
@@ -392,21 +410,31 @@ body {
 
 .nameBig {
     font-size: 2rem;
+    text-align: center;
+    color: white;
+    -webkit-text-stroke: 0.5px black;
 }
 
 .typeBig {
+    width: 110px;
+    text-align: center;
     font-size: 1.5rem;
     border-radius: 20px;
     padding: 0.2rem;
     background-color: rgba(228, 226, 226, 0.973);
+    border: 1px solid white;
+    color: white;
 }
 
 
 .pokemonDataContainer {
+    
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    height: 100%;
+    border-radius: 10px;
 }
 
 .pokemonDataContainer > div {
@@ -416,7 +444,11 @@ body {
     align-items: center;
     width: 100%;
     border-radius: 10px 10px 0 0;
-    border-top: 1px solid red;
+    border-top: 1px solid white;
+}
+
+.contentContainerBackground {
+    background-color: white;
 }
 
 .info {
@@ -427,6 +459,7 @@ body {
     padding-left: 2rem;
     padding-right: 2rem;
     width: 100%;
+    cursor: pointer;
 }
 
 .info > div {
@@ -438,7 +471,7 @@ body {
     height: auto;
 }
 
-.infoContent {
+.infoContent, .statsContent,.evolutionContent {
     width: 100%;
 }
 
@@ -464,12 +497,79 @@ body {
 }
 
 
+/* ======================= POKEMON TYPES ================================ */
+.normal {
+    background-color: rgb(168, 168, 120, 0.8);
+}
 
+.fire {
+    background-color: rgb(240, 128, 48, 0.8);
+}
 
+.water {
+    background-color: rgb(104, 144, 240, 0.8);
+}
 
+.grass {
+    background-color: rgb(120, 200, 80, 0.8);
+}
 
+.electric {
+    background-color: rgb(248, 208, 48, 0.8);
+}
 
+.ice {
+    background-color: rgb(152, 216, 216, 0.8);
+}
 
+.fighting {
+    background-color: rgb(192, 48, 40, 0.8);
+}
+
+.poison {
+    background-color: rgb(160, 64, 160, 0.8);
+}
+
+.ground {
+    background-color: rgb(224, 192, 104, 0.8);
+}
+
+.flying {
+    background-color: rgb(168, 144, 240, 0.8);
+
+}
+
+.psychic {
+    background-color: rgb(248, 88, 136, 0.8);
+}
+
+.bug {
+    background-color: rgb(168, 184, 32, 0.8);
+}
+
+.rock {
+    background-color: rgb(184, 160, 56, 0.8);
+}
+
+.ghost {
+    background-color: rgb(112, 88, 152, 0.8);
+}
+
+.dark {
+    background-color: rgb(112, 88, 72, 0.8);
+}
+
+.dragon {
+    background-color: rgb(112, 56, 248, 0.8);
+}
+
+.steel {
+    background-color: rgb(184, 184, 208, 0.8);
+}
+
+.fairy {
+    background-color: rgb(240, 182, 188, 0.8);
+}
 
 /* ============================================= BEISPIEL ======================================================   */ 
 

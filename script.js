@@ -123,20 +123,30 @@ function closePokedex() {
     document.getElementById('corner4').style.width = '241px';
 }
 
+/* =========================================================== Init Function ================================================== */
+    async function init() {
+        url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
+        response = await fetch(url);
+        overviewStats = await response.json();
+
+        renderAllPokemons();
+
+    }
+
+
 /* =========================================================== RENDER ALL POKEMONS ================================================== */
 async function renderAllPokemons() {
     let allPokemons = document.getElementById('allPokemons');
 
-    for (let i = 0; i < 20 /* results.length */; i++) {
+    results = overviewStats['results'];
+
+    for (let i = 0; i < 30; i++) {
+
+        // results.length
         let currentPokemon = i+1;
 
-        url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
-        response = await fetch(url);
-        overviewStats = await response.json();
-        results = overviewStats['results'];
         pokemonName = results[i]['name'];
         pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
-    
         url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
         response2 = await fetch(url2);
         overviewStats2 = await response2.json();
@@ -145,16 +155,19 @@ async function renderAllPokemons() {
         typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
 
         allPokemons.innerHTML += smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+    
+        document.getElementById('type' + currentPokemon).classList.add(type);
+        document.getElementById('cardHeader' + currentPokemon).classList.add(type);
+
     }
 }
 
 function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
     return /*html*/ `
         <div class="pokemonCard" onclick="openPokemonCard(${currentPokemon})">
-            <div class="cardHeader">
+            <div id="cardHeader${currentPokemon}" class="cardHeader">
                 <div>
                     <div class="favorite">
-                        <img src="./img/icons/favorite empty.png">
                     </div>
                     <div class="indexNumber"># <span>${currentPokemon}</span></div>
                 </div>
@@ -163,11 +176,14 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
                 </div>
                 <div>
                     <div class="name">${pokemonNameUpperCase}</div>
-                    <div class="type">${typeUpperCase}</div>
+                    <div id="type${currentPokemon}" class="type">${typeUpperCase}</div>
                 </div>
             </div>
         </div>
     `;
+
+    //<img src="./img/icons/favorite empty.png">
+
 }
 
 /* async function getDataFromAllPokemonUrl(currentPokemon) {
@@ -246,33 +262,38 @@ async function openPokemonCard(currentPokemon) {
     spicies = overviewStats3['genera'][7]['genus'];  
 
     let pokemon = document.getElementById('bigPokemonCardContainer');
+    pokemon.innerHTML = '';
     pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
     pokemon.classList.add('display');
+
+    document.getElementById('typeBig' + currentPokemon).classList.add(type);
+    document.getElementById('cardHeaderBig' + currentPokemon).classList.add(type);
+    document.getElementById('pokemonDataContainer' + currentPokemon).classList.add(type);
 
 }
 
 function bigPokemonCardTemplate(currentPokemon) {
 return /*html*/ `
-    <div class="bigPokemonCard">
-        <div class="cardHeader">
+    <div class="bigPokemonCard" onclick="doNotClose(event)">
+        <div id="cardHeaderBig${currentPokemon}" class="cardHeader cardHeaderBig">
             <div>
                 <div class="favorite">
-                    <img src="./img/icons/favorite empty.png">
                 </div>
-                <div class="indexNumberBig"># <span>${currentPokemon}</span></div>
+                <div class="indexNumberBig"><span># ${currentPokemon}</span></div>
             </div>
             <div class="pokemonImgBig">
                 <img src="${pokemonImg}">
             </div>
             <div>
                 <div class="nameBig">${pokemonNameUpperCase}</div>
-                <div class="typeBig">${typeUpperCase}</div>
+                <div id="typeBig${currentPokemon}" class="typeBig">${typeUpperCase}</div>
             </div>
         </div>
 
-        <div class="pokemonDataContainer" id="pokemonDataContainer">
-            <div>
-                <div class="info" onclick="renderInfo()">
+        <div class="pokemonDataContainer" id="pokemonDataContainer${currentPokemon}">
+
+            <div id="infoContentContainer" class="contentContainerBackground">
+                <div class="info" onclick="showInfo()">
                     <div>Info</div>
                     <div>
                         <img src="./img/icons/info.png">
@@ -280,7 +301,6 @@ return /*html*/ `
                 </div>
 
                 <div class="infoContent" id="infoContent">
-                <!-- ==================  Info TEMPLATE  ======================== -->
                     <div class="infoData">
                         <div>
                             <div>Spicies</div>
@@ -288,11 +308,11 @@ return /*html*/ `
                         </div>
                         <div>
                             <div>Height</div>
-                            <div>${height}</div>
+                            <div>${height} m</div>
                         </div>
                         <div>
                             <div>Weight</div>
-                            <div>${weight}</div>
+                            <div>${weight} kg</div>
                         </div>
                         <div>
                             <div>Abilities</div>
@@ -310,65 +330,152 @@ return /*html*/ `
                 </div>
             </div>
 
-            <div>
-                <div class="info" onclick="renderStats()">
+            <div id="statsContentContainer">
+                <div class="info" onclick="showStats()">
                     <div>Stats</div>
                     <div>
                         <img src="./img/icons/data.png">
                     </div>
                 </div>
 
-                <div class="infoContent" id="infoContent">
-                <!-- ==================  Stats TEMPLATE  ======================== -->
+                <div class="statsContent dNone" id="statsContent">
                     <div class="infoData">
+                        <div>
+                            <div>HP</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Attack</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Special Defense</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Speed</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
                     </div>  
                 </div>
             </div>
 
-            <div>
-                <div class="info" onclick="renderEvolution()">
+            <div id="evolutionContentContainer">
+                <div class="info" onclick="showEvolution()">
                     <div>Evolution</div>
                     <div>
                         <img src="./img/icons/increase.png">
                     </div>
                 </div>
 
-                <div class="infoContent" id="infoContent">
-                <!-- ==================  Evolution TEMPLATE  ======================== -->
+                <div class="evolutionContent dNone" id="evolutionContent">
                     <div class="infoData">
+                        <div>
+                            <div>Base</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>First Evolution</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>First Evolution</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Second Evolution</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Second Evolution</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+                        <div>
+                            <div>Third Evolution</div>
+                            <div>XXXXXXXXX</div>
+                        </div>
+
                     </div>  
                 </div>
             </div>
         </div> 
     </div>
 `;
+
+// <img src="./img/icons/favorite empty.png">
 }
 
 /* =========================================================== RENDER INFO ================================================== */
-function renderInfo() {
+function showInfo() {
+    document.getElementById('statsContent').classList.add('dNone');
+    document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
 
+    document.getElementById('evolutionContent').classList.add('dNone');
+    document.getElementById('evolutionContentContainer').classList.remove('contentContainerBackground');
+
+    document.getElementById('infoContent').classList.remove('dNone');
+    document.getElementById('infoContentContainer').classList.add('contentContainerBackground');
 }
-
-
-
-
 
 /* =========================================================== RENDER STATS ================================================== */
-function renderStats() {
-    
+function showStats() {
+    document.getElementById('infoContent').classList.add('dNone');
+    document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
+
+    document.getElementById('evolutionContent').classList.add('dNone');
+    document.getElementById('evolutionContentContainer').classList.remove('contentContainerBackground');
+
+    document.getElementById('statsContent').classList.remove('dNone');
+    document.getElementById('statsContentContainer').classList.add('contentContainerBackground');
 }
-
-
-
 
 /* =========================================================== RENDER EVOLUTION ================================================== */
-function renderEvolution() {
-    
+function showEvolution() {
+    document.getElementById('infoContent').classList.add('dNone');
+    document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
+
+    document.getElementById('statsContent').classList.add('dNone');
+    document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
+
+    document.getElementById('evolutionContent').classList.remove('dNone');
+    document.getElementById('evolutionContentContainer').classList.add('contentContainerBackground');
 }
 
+/* =========================================================== LOAD MORE POKEMON ================================================== */
+/* 
+
+let allPokemons = [];
+let nextPokemonList = results;
+loading = false;
 
 
 
+async function loadNextPokemons(){
+    let list = fetch (nextPokemonList);
+    for (let i = 0; i < list.results.length; i++) {
+        let pokemon = await (await fetch(results[i].url).json());
+        allPokemons.push(pokemon);
+
+        nextPokemonList = list.next;
+    }
+}
+
+async function onScroll() {
+    if(bottomPageReached && !loading){
+        loading = true;
+        await loadNextPokemons();
+        loading = false;
+    }
+
+} */
 
 
 
@@ -378,11 +485,13 @@ function renderEvolution() {
 
 /* =========================================================== CLOSE POKEMON CARD ================================================== */
 function closePokemonCard() {
-
+    document.getElementById('bigPokemonCardContainer').classList.remove('display');
 }
 
 
-
+function doNotClose(event) {
+    event.stopPropagation();
+}
 
 
 
