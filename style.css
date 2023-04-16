@@ -428,7 +428,6 @@ body {
 
 
 .pokemonDataContainer {
-    
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -460,6 +459,7 @@ body {
     padding-right: 2rem;
     width: 100%;
     cursor: pointer;
+    border-radius: 10px 10px 0 0;
 }
 
 .info > div {
@@ -494,6 +494,10 @@ body {
 
 .infoData > div > div:first-of-type {
     min-width: 6.5rem;
+}
+
+.infoData > div > div:last-of-type {
+    font-weight: bold;
 }
 
 

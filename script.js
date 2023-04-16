@@ -18,9 +18,12 @@ function renderPokemonInfo(){
 
 /* ==================================================== VARIABLES ==================================================================*/
 let firstPokemon = 1;
+let nextPokemonList = 'https://pokeapi.co/api/v2/pokemon/';
+let nextPokemonListResults = nextPokemonList['results']
 
 // Pokemon overview
-let results
+let results;
+let allPokemonsList = [];
 
 let indexNumber; // ok
 let pokemonName; // ok
@@ -38,7 +41,9 @@ let weight; // ok
 let abilities; // ok
 let abilites2; // ok
 let weakness;
-let genders;
+let moveOne;
+let moveTwo;
+let moveThree
 
 // Pokemon Stats
 let hp; // ok
@@ -142,7 +147,6 @@ async function renderAllPokemons() {
 
     for (let i = 0; i < 30; i++) {
 
-        // results.length
         let currentPokemon = i+1;
 
         pokemonName = results[i]['name'];
@@ -186,42 +190,6 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
 
 }
 
-/* async function getDataFromAllPokemonUrl(currentPokemon) {
-    url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
-    response = await fetch(url);
-    overviewStats = await response.json();
-    results = overviewStats['results'];
-    pokemonName = results[i]['name'];
-    pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
-} */
-
-/* async function getDataFromPokemonUrl(currentPokemon) {
-        url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
-        response2 = await fetch(url2);
-        overviewStats2 = await response2.json();
-
-        pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
-        height = overviewStats2['height'];
-        weight = overviewStats2['weight'];        
-        type2 =overviewStats2['types'][1]['type']['name'];
-        hp = overviewStats2['stats'][0]['base_stat'];
-        attack = overviewStats2['stats'][1]['base_stat'];
-        defense = overviewStats2['stats'][2]['base_stat'];
-        specialAttack = overviewStats2['stats'][3]['base_stat'];
-        specialDefense = overviewStats2['stats'][4]['base_stat'];
-        speed = overviewStats2['stats'][5]['base_stat'];
-        abilities = overviewStats2['abilities'][0]['ability']['name'];
-        abilites2 = overviewStats2['abilities'][1]['ability']['name']; 
-}*/
-
-/* async function getDataFromSpeciesUrl(currentPokemon) {
-    url3 = `https://pokeapi.co/api/v2/pokemon-species/${currentPokemon}/`; 
-    response3 = await fetch(url3);
-    overviewStats3 = await response3.json();
-
-    spicies = overviewStats3['genera'][7]['genus'];  
-}*/
-
 /* async function getDataFromEvolutionUrl(currentPokemon) {
     url4 = `https://pokeapi.co/api/v2/evolution-chain/${currentPokemon}/`; 
     response4 = await fetch(url4);
@@ -254,12 +222,38 @@ async function openPokemonCard(currentPokemon) {
     weight = overviewStats2['weight'];  
     weight = weight / 10;
     abilities = overviewStats2['abilities'][0]['ability']['name'];
-      
+    abilites2 = overviewStats2['abilities'][1]['ability']['name'];
+    moveOne = overviewStats2['moves'][0]['move']['name'];
+    moveTwo = overviewStats2['moves'][1]['move']['name'];
+    moveThree = overviewStats2['moves'][2]['move']['name'];
+
+    hp = overviewStats2['stats'][0]['base_stat'];
+    attack = overviewStats2['stats'][1]['base_stat'];
+    defense = overviewStats2['stats'][2]['base_stat'];
+    specialAttack = overviewStats2['stats'][3]['base_stat'];
+    specialDefense = overviewStats2['stats'][4]['base_stat'];
+    speed = overviewStats2['stats'][5]['base_stat'];
+    
     url3 = `https://pokeapi.co/api/v2/pokemon-species/${currentPokemon}/`; 
     response3 = await fetch(url3);
     overviewStats3 = await response3.json();
+    spicies = overviewStats3['genera'][7]['genus']; 
+    base = overviewStats3['evolves_from_species']['name']; 
+ 
 
-    spicies = overviewStats3['genera'][7]['genus'];  
+    url4 = `https://pokeapi.co/api/v2/evolution-chain/${currentPokemon}/`; 
+    response4 = await fetch(url4);
+    overviewStats4 = await response4.json();
+
+    firstEvo = overviewStats4['chain']['evolves_to'][0]['species']['name']; 
+
+    secondEvo = overviewStats4['chain']['evolves_to'][0]['species']['url']
+
+
+    secondEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to'][0]['species']['name']; 
+    //thirdEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to']['evolves_to']['species']['name'];    
+
+
 
     let pokemon = document.getElementById('bigPokemonCardContainer');
     pokemon.innerHTML = '';
@@ -268,13 +262,13 @@ async function openPokemonCard(currentPokemon) {
 
     document.getElementById('typeBig' + currentPokemon).classList.add(type);
     document.getElementById('cardHeaderBig' + currentPokemon).classList.add(type);
-    document.getElementById('pokemonDataContainer' + currentPokemon).classList.add(type);
-
+    document.getElementById('pokemonDataContainer').classList.add(type);
+    document.getElementById('bigPokemonCard').classList.add(type);
 }
 
 function bigPokemonCardTemplate(currentPokemon) {
 return /*html*/ `
-    <div class="bigPokemonCard" onclick="doNotClose(event)">
+    <div id="bigPokemonCard" class="bigPokemonCard" onclick="doNotClose(event)">
         <div id="cardHeaderBig${currentPokemon}" class="cardHeader cardHeaderBig">
             <div>
                 <div class="favorite">
@@ -290,7 +284,7 @@ return /*html*/ `
             </div>
         </div>
 
-        <div class="pokemonDataContainer" id="pokemonDataContainer${currentPokemon}">
+        <div class="pokemonDataContainer" id="pokemonDataContainer">
 
             <div id="infoContentContainer" class="contentContainerBackground">
                 <div class="info" onclick="showInfo()">
@@ -316,7 +310,7 @@ return /*html*/ `
                         </div>
                         <div>
                             <div>Abilities</div>
-                            <div>${abilities}</div>
+                            <div>${abilities}, ${abilites2}</div>
                         </div>
                         <div>
                             <div>Weakness</div>
@@ -324,7 +318,7 @@ return /*html*/ `
                         </div>
                         <div>
                             <div>Moves</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${moveOne}, ${moveTwo}, ${moveThree}</div>
                         </div>
                     </div>  
                 </div>
@@ -342,27 +336,27 @@ return /*html*/ `
                     <div class="infoData">
                         <div>
                             <div>HP</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${hp}</div>
                         </div>
                         <div>
                             <div>Attack</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${attack}</div>
                         </div>
                         <div>
                             <div>Defense</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${defense}</div>
                         </div>
                         <div>
                             <div>Special Attack</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${specialAttack}</div>
                         </div>
                         <div>
                             <div>Special Defense</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${specialDefense}</div>
                         </div>
                         <div>
                             <div>Speed</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${speed}</div>
                         </div>
                     </div>  
                 </div>
@@ -380,27 +374,19 @@ return /*html*/ `
                     <div class="infoData">
                         <div>
                             <div>Base</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${base}</div>
                         </div>
                         <div>
                             <div>First Evolution</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
-                        <div>
-                            <div>First Evolution</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${firstEvo}</div>
                         </div>
                         <div>
                             <div>Second Evolution</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
-                        <div>
-                            <div>Second Evolution</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${secondEvo}</div>
                         </div>
                         <div>
                             <div>Third Evolution</div>
-                            <div>XXXXXXXXX</div>
+                            <div>${thirdEvo}</div>
                         </div>
 
                     </div>  
@@ -450,16 +436,11 @@ function showEvolution() {
 }
 
 /* =========================================================== LOAD MORE POKEMON ================================================== */
-/* 
 
-let allPokemons = [];
-let nextPokemonList = results;
 loading = false;
 
-
-
 async function loadNextPokemons(){
-    let list = fetch (nextPokemonList);
+    let list = await fetch(nextPokemonList);
     for (let i = 0; i < list.results.length; i++) {
         let pokemon = await (await fetch(results[i].url).json());
         allPokemons.push(pokemon);
@@ -468,6 +449,7 @@ async function loadNextPokemons(){
     }
 }
 
+
 async function onScroll() {
     if(bottomPageReached && !loading){
         loading = true;
@@ -475,12 +457,7 @@ async function onScroll() {
         loading = false;
     }
 
-} */
-
-
-
-
-
+}
 
 
 /* =========================================================== CLOSE POKEMON CARD ================================================== */
