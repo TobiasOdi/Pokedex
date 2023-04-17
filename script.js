@@ -18,62 +18,43 @@ function renderPokemonInfo(){
 
 /* ==================================================== VARIABLES ==================================================================*/
 let firstPokemon = 1;
-let nextPokemonList = 'https://pokeapi.co/api/v2/pokemon/';
-let nextPokemonListResults = nextPokemonList['results']
 
 // Pokemon overview
 let results;
-let allPokemonsList = [];
 
-let indexNumber; // ok
-let pokemonName; // ok
-let pokemonNameUpperCase; // ok
-let pokemonImg; // ok
-let pokemonImg2 // ok
-let type; // ok
-let typeUpperCase; // ok
-let type2; // ok
+let indexNumber;
+let pokemonName;
+let pokemonNameUpperCase;
+let pokemonImg;
+let pokemonImg2
+let type;
+let typeUpperCase;
+let type2;
 
 // Pokemon Infos
-let spicies; // ok
-let height; // ok
-let weight; // ok
-let abilities; // ok
-let abilites2; // ok
+let spicies;
+let height;
+let weight;
+let abilities;
+let abilites2;
 let weakness;
-let moveOne;
-let moveTwo;
-let moveThree
+let gender;
 
 // Pokemon Stats
-let hp; // ok
-let attack; // ok
-let defense; // ok
-let specialAttack; // ok
-let specialDefense; // ok
-let speed; // ok
+let hp;
+let hpMax = 255;
+let attack;
+let attackMax = 190;
+let defense;
+let defenseMax = 150;
+let specialAttack;
+let specialAttackMax = 194;
+let specialDefense;
+let specialDefenseMax = 230;
+let speed;
+let speedMax = 160;
 
-// Pokemon Evolution
-let base; 
-let firstEvo; 
-let secondEvo; 
-let thirdEvo; 
 
-let url;
-let response;
-let overviewStats;
-
-let url2;
-let response2;
-let overviewStats2;
-
-let url3;
-let response3;
-let overviewStats3;
-
-let url4;
-let response4;
-let overviewStats4;
 
 /* =========================================================== POKEDEX OPEN/CLOSE ================================================== */
 function openPokedex() {
@@ -238,26 +219,16 @@ async function openPokemonCard(currentPokemon) {
     response3 = await fetch(url3);
     overviewStats3 = await response3.json();
     spicies = overviewStats3['genera'][7]['genus']; 
-    base = overviewStats3['evolves_from_species']['name']; 
  
 
     url4 = `https://pokeapi.co/api/v2/evolution-chain/${currentPokemon}/`; 
     response4 = await fetch(url4);
     overviewStats4 = await response4.json();
 
-    firstEvo = overviewStats4['chain']['evolves_to'][0]['species']['name']; 
-
-    secondEvo = overviewStats4['chain']['evolves_to'][0]['species']['url']
-
-
-    secondEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to'][0]['species']['name']; 
-    //thirdEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to']['evolves_to']['species']['name'];    
-
-
-
     let pokemon = document.getElementById('bigPokemonCardContainer');
     pokemon.innerHTML = '';
     pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
+    calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed);
     pokemon.classList.add('display');
 
     document.getElementById('typeBig' + currentPokemon).classList.add(type);
@@ -316,9 +287,18 @@ return /*html*/ `
                             <div>Weakness</div>
                             <div>XXXXXXXXX</div>
                         </div>
-                        <div>
-                            <div>Moves</div>
-                            <div>${moveOne}, ${moveTwo}, ${moveThree}</div>
+                        <div class="gender">
+                            <div>Gender</div>
+                            <div>
+                                <div>
+                                    <img class="genderIcon" src="./img/male.png">
+                                    <span></span>
+                                </div>
+                                <div>
+                                    <img class="genderIcon" src="./img/female.png">
+                                    <span></span>
+                                </div>
+                            </div>
                         </div>
                     </div>  
                 </div>
@@ -337,56 +317,74 @@ return /*html*/ `
                         <div>
                             <div>HP</div>
                             <div>${hp}</div>
+                            <div id="hp" class="progressBar">
+                                <div id="hpProgress" class="progress"></div>
+                            </div>
                         </div>
                         <div>
                             <div>Attack</div>
                             <div>${attack}</div>
+                            <div id="attack" class="progressBar">
+                                <div id="attackProgress" class="progress"></div>
+                            </div>
                         </div>
                         <div>
                             <div>Defense</div>
                             <div>${defense}</div>
+                            <div id="defense" class="progressBar">
+                                <div id="defenseProgress" class="progress"></div>
+                            </div>
                         </div>
                         <div>
                             <div>Special Attack</div>
                             <div>${specialAttack}</div>
+                            <div id="specialAttack" class="progressBar">
+                                <div id="specialAttackProgress" class="progress"></div>
+                            </div>
                         </div>
                         <div>
                             <div>Special Defense</div>
                             <div>${specialDefense}</div>
+                            <div id="specialDefense" class="progressBar">
+                                <div id="specialDefenseProgress" class="progress"></div>
+                            </div>
                         </div>
                         <div>
                             <div>Speed</div>
                             <div>${speed}</div>
+                            <div id="speed" class="progressBar">
+                                <div id="speedProgress" class="progress"></div>
+                            </div>
                         </div>
                     </div>  
                 </div>
             </div>
 
-            <div id="evolutionContentContainer">
-                <div class="info" onclick="showEvolution()">
-                    <div>Evolution</div>
+            <div id="movesContentContainer">
+                <div class="info" onclick="showMoves()">
+                    <div>Moves</div>
                     <div>
                         <img src="./img/icons/increase.png">
                     </div>
                 </div>
 
-                <div class="evolutionContent dNone" id="evolutionContent">
+                <div class="movesContent dNone" id="movesContent">
                     <div class="infoData">
                         <div>
                             <div>Base</div>
-                            <div>${base}</div>
+                            <div>XXXXXXXXX</div>
                         </div>
                         <div>
                             <div>First Evolution</div>
-                            <div>${firstEvo}</div>
+                            <div>XXXXXXXXX</div>
                         </div>
                         <div>
                             <div>Second Evolution</div>
-                            <div>${secondEvo}</div>
+                            <div>XXXXXXXXX</div>
                         </div>
                         <div>
                             <div>Third Evolution</div>
-                            <div>${thirdEvo}</div>
+                            <div>XXXXXXXXX</div>
                         </div>
 
                     </div>  
@@ -399,13 +397,46 @@ return /*html*/ `
 // <img src="./img/icons/favorite empty.png">
 }
 
+function calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed) {
+    let hpProgress = document.getElementById('hpProgress');
+    let hpProgressWith = hp / hpMax * 100;
+    hpProgress.style.width = hpProgressWith + '%';
+    hpProgress.style.backgroundColor = 'rgb(27, 117, 27)';
+
+    let attackProgress = document.getElementById('attackProgress');
+    let attackProgressWith = attack / attackMax * 100;
+    attackProgress.style.width = attackProgressWith + '%';
+    attackProgress.style.backgroundColor = 'rgb(209, 46, 46)';
+
+    let defenseProgress = document.getElementById('defenseProgress');
+    let defenseProgressWith = defense / defenseMax * 100;
+    defenseProgress.style.width = defenseProgressWith + '%';
+    defenseProgress.style.backgroundColor = 'rgb(255, 165, 0)';
+
+    let specialAttackProgress = document.getElementById('specialAttackProgress');
+    let specialAttackProgressWith = specialAttack / specialAttackMax * 100;
+    specialAttackProgress.style.width = specialAttackProgressWith + '%';
+    specialAttackProgress.style.backgroundColor = 'rgb(209, 46, 46)';
+
+    let specialDefenseProgress = document.getElementById('specialDefenseProgress');
+    let specialDefenseProgressWith = specialDefense / specialDefenseMax * 100;
+    specialDefenseProgress.style.width = specialDefenseProgressWith + '%';
+    specialDefenseProgress.style.backgroundColor = 'rgb(255, 165, 0)';
+
+    let speedProgress = document.getElementById('speedProgress');
+    let speedProgressWith = speed / speedMax * 100;
+    speedProgress.style.width = speedProgressWith + '%';
+    speedProgress.style.backgroundColor = 'rgb(105, 196, 248)';
+
+}
+
 /* =========================================================== RENDER INFO ================================================== */
 function showInfo() {
     document.getElementById('statsContent').classList.add('dNone');
     document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
 
-    document.getElementById('evolutionContent').classList.add('dNone');
-    document.getElementById('evolutionContentContainer').classList.remove('contentContainerBackground');
+    document.getElementById('movesContent').classList.add('dNone');
+    document.getElementById('movesContentContainer').classList.remove('contentContainerBackground');
 
     document.getElementById('infoContent').classList.remove('dNone');
     document.getElementById('infoContentContainer').classList.add('contentContainerBackground');
@@ -416,23 +447,23 @@ function showStats() {
     document.getElementById('infoContent').classList.add('dNone');
     document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
 
-    document.getElementById('evolutionContent').classList.add('dNone');
-    document.getElementById('evolutionContentContainer').classList.remove('contentContainerBackground');
+    document.getElementById('movesContent').classList.add('dNone');
+    document.getElementById('movesContentContainer').classList.remove('contentContainerBackground');
 
     document.getElementById('statsContent').classList.remove('dNone');
     document.getElementById('statsContentContainer').classList.add('contentContainerBackground');
 }
 
-/* =========================================================== RENDER EVOLUTION ================================================== */
-function showEvolution() {
+/* =========================================================== RENDER moves ================================================== */
+function showMoves() {
     document.getElementById('infoContent').classList.add('dNone');
     document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
 
     document.getElementById('statsContent').classList.add('dNone');
     document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
 
-    document.getElementById('evolutionContent').classList.remove('dNone');
-    document.getElementById('evolutionContentContainer').classList.add('contentContainerBackground');
+    document.getElementById('movesContent').classList.remove('dNone');
+    document.getElementById('movesContentContainer').classList.add('contentContainerBackground');
 }
 
 /* =========================================================== LOAD MORE POKEMON ================================================== */
