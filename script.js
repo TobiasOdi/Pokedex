@@ -18,6 +18,8 @@ function renderPokemonInfo(){
 
 /* ==================================================== VARIABLES ==================================================================*/
 let firstPokemon = 1;
+let nextPokemonCounter = 31;
+let currentPokemonCounter = 1;
 
 // Pokemon overview
 let results;
@@ -54,8 +56,6 @@ let specialDefenseMax = 230;
 let speed;
 let speedMax = 160;
 
-
-
 /* =========================================================== POKEDEX OPEN/CLOSE ================================================== */
 function openPokedex() {
     document.getElementById('startButton').classList.add('dNone');
@@ -81,9 +81,13 @@ function openPokedex() {
 
     document.getElementById('corner4').style.height = '50px';
     document.getElementById('corner4').style.width = '58.5px';
+
+    document.getElementById('loadNextPokemon').style.display = 'flex';
+    
 }
 
 function closePokedex() {
+
     document.getElementById('startButton').classList.remove('dNone');
 
     document.getElementById('homeScreenContainer').classList.remove('homeScreenContainerOpened');
@@ -107,18 +111,18 @@ function closePokedex() {
 
     document.getElementById('corner4').style.height = '206px';
     document.getElementById('corner4').style.width = '241px';
+
+    document.getElementById('loadNextPokemon').style.display = 'none';
+
 }
 
 /* =========================================================== Init Function ================================================== */
-    async function init() {
-        url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
-        response = await fetch(url);
-        overviewStats = await response.json();
-
-        renderAllPokemons();
-
-    }
-
+async function init() {
+    url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
+    response = await fetch(url);
+    overviewStats = await response.json();
+    renderAllPokemons();
+}
 
 /* =========================================================== RENDER ALL POKEMONS ================================================== */
 async function renderAllPokemons() {
@@ -126,11 +130,11 @@ async function renderAllPokemons() {
 
     results = overviewStats['results'];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = currentPokemonCounter; i < nextPokemonCounter; i++) {
 
-        let currentPokemon = i+1;
+        let currentPokemon = i;
 
-        pokemonName = results[i]['name'];
+        pokemonName = results[currentPokemon]['name'];
         pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
         url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
         response2 = await fetch(url2);
@@ -143,8 +147,10 @@ async function renderAllPokemons() {
     
         document.getElementById('type' + currentPokemon).classList.add(type);
         document.getElementById('cardHeader' + currentPokemon).classList.add(type);
-
     }
+
+    currentPokemonCounter = currentPokemonCounter + 30;
+    nextPokemonCounter = nextPokemonCounter + 30;
 }
 
 function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
@@ -204,9 +210,7 @@ async function openPokemonCard(currentPokemon) {
     weight = weight / 10;
     abilities = overviewStats2['abilities'][0]['ability']['name'];
     abilites2 = overviewStats2['abilities'][1]['ability']['name'];
-    moveOne = overviewStats2['moves'][0]['move']['name'];
-    moveTwo = overviewStats2['moves'][1]['move']['name'];
-    moveThree = overviewStats2['moves'][2]['move']['name'];
+    let moves = overviewStats2['moves'];
 
     hp = overviewStats2['stats'][0]['base_stat'];
     attack = overviewStats2['stats'][1]['base_stat'];
@@ -229,6 +233,7 @@ async function openPokemonCard(currentPokemon) {
     pokemon.innerHTML = '';
     pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
     calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed);
+    renderMoves(moves);
     pokemon.classList.add('display');
 
     document.getElementById('typeBig' + currentPokemon).classList.add(type);
@@ -259,7 +264,7 @@ return /*html*/ `
 
             <div id="infoContentContainer" class="contentContainerBackground">
                 <div class="info" onclick="showInfo()">
-                    <div>Info</div>
+                    <div id="infoTitle">Info</div>
                     <div>
                         <img src="./img/icons/info.png">
                     </div>
@@ -306,14 +311,14 @@ return /*html*/ `
 
             <div id="statsContentContainer">
                 <div class="info" onclick="showStats()">
-                    <div>Stats</div>
+                    <div id="statsTitle" style="color: white;">Stats</div>
                     <div>
                         <img src="./img/icons/data.png">
                     </div>
                 </div>
 
                 <div class="statsContent dNone" id="statsContent">
-                    <div class="infoData">
+                    <div class="statsData">
                         <div>
                             <div>HP</div>
                             <div>${hp}</div>
@@ -362,30 +367,14 @@ return /*html*/ `
 
             <div id="movesContentContainer">
                 <div class="info" onclick="showMoves()">
-                    <div>Moves</div>
+                    <div id="movesTitle" style="color: white;">Moves</div>
                     <div>
                         <img src="./img/icons/increase.png">
                     </div>
                 </div>
 
                 <div class="movesContent dNone" id="movesContent">
-                    <div class="infoData">
-                        <div>
-                            <div>Base</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
-                        <div>
-                            <div>First Evolution</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
-                        <div>
-                            <div>Second Evolution</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
-                        <div>
-                            <div>Third Evolution</div>
-                            <div>XXXXXXXXX</div>
-                        </div>
+                    <div class="movesData" id="moves">
 
                     </div>  
                 </div>
@@ -393,43 +382,75 @@ return /*html*/ `
         </div> 
     </div>
 `;
-
 // <img src="./img/icons/favorite empty.png">
 }
 
 function calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed) {
+    hpProgressBar(hp);
+    attackProgressBar(attack);
+    defenseProgressBar(defense);
+    specialAttackProgressBar(specialAttack);
+    specialDefenseProgressBar(specialDefense);
+    speedProgressBar(speed);
+}
+
+function hpProgressBar(hp) {
     let hpProgress = document.getElementById('hpProgress');
     let hpProgressWith = hp / hpMax * 100;
     hpProgress.style.width = hpProgressWith + '%';
     hpProgress.style.backgroundColor = 'rgb(27, 117, 27)';
+}
 
+function attackProgressBar(attack) {
     let attackProgress = document.getElementById('attackProgress');
     let attackProgressWith = attack / attackMax * 100;
     attackProgress.style.width = attackProgressWith + '%';
     attackProgress.style.backgroundColor = 'rgb(209, 46, 46)';
+}
 
+function defenseProgressBar(defense) {
     let defenseProgress = document.getElementById('defenseProgress');
     let defenseProgressWith = defense / defenseMax * 100;
     defenseProgress.style.width = defenseProgressWith + '%';
     defenseProgress.style.backgroundColor = 'rgb(255, 165, 0)';
+}
 
+function specialAttackProgressBar(specialAttack) {
     let specialAttackProgress = document.getElementById('specialAttackProgress');
     let specialAttackProgressWith = specialAttack / specialAttackMax * 100;
     specialAttackProgress.style.width = specialAttackProgressWith + '%';
     specialAttackProgress.style.backgroundColor = 'rgb(209, 46, 46)';
+}
 
+function specialDefenseProgressBar(specialDefense) {
     let specialDefenseProgress = document.getElementById('specialDefenseProgress');
     let specialDefenseProgressWith = specialDefense / specialDefenseMax * 100;
     specialDefenseProgress.style.width = specialDefenseProgressWith + '%';
     specialDefenseProgress.style.backgroundColor = 'rgb(255, 165, 0)';
+}
 
+function speedProgressBar(speed) {
     let speedProgress = document.getElementById('speedProgress');
     let speedProgressWith = speed / speedMax * 100;
     speedProgress.style.width = speedProgressWith + '%';
     speedProgress.style.backgroundColor = 'rgb(105, 196, 248)';
-
 }
 
+function renderMoves(moves) {
+    let movesContainer = document.getElementById('moves');
+
+    for (let i = 0; i < 10; i++) {
+        
+        let move = moves[i]['move']['name'];
+
+        movesContainer.innerHTML += /*html*/ `
+            <div>
+                <div>${i+1}.</div>
+                <div>${move}</div>
+            </div>
+        `;
+    }
+}
 /* =========================================================== RENDER INFO ================================================== */
 function showInfo() {
     document.getElementById('statsContent').classList.add('dNone');
@@ -440,6 +461,10 @@ function showInfo() {
 
     document.getElementById('infoContent').classList.remove('dNone');
     document.getElementById('infoContentContainer').classList.add('contentContainerBackground');
+
+    document.getElementById('infoTitle').style.color = 'black';
+    document.getElementById('statsTitle').style.color = 'white';
+    document.getElementById('movesTitle').style.color = 'white';
 }
 
 /* =========================================================== RENDER STATS ================================================== */
@@ -452,6 +477,10 @@ function showStats() {
 
     document.getElementById('statsContent').classList.remove('dNone');
     document.getElementById('statsContentContainer').classList.add('contentContainerBackground');
+
+    document.getElementById('infoTitle').style.color = 'white';
+    document.getElementById('statsTitle').style.color = 'black';
+    document.getElementById('movesTitle').style.color = 'white';
 }
 
 /* =========================================================== RENDER moves ================================================== */
@@ -464,33 +493,21 @@ function showMoves() {
 
     document.getElementById('movesContent').classList.remove('dNone');
     document.getElementById('movesContentContainer').classList.add('contentContainerBackground');
+
+    document.getElementById('infoTitle').style.color = 'white';
+    document.getElementById('statsTitle').style.color = 'white';
+    document.getElementById('movesTitle').style.color = 'black';
 }
 
 /* =========================================================== LOAD MORE POKEMON ================================================== */
 
-loading = false;
+async function loadNextPokemon() {
+    await renderAllPokemons();
+    //let loadNextPokemon = document.getElementById("allPokemons");
+    //loadNextPokemon.scrollTop = element.scrollHeight;
 
-async function loadNextPokemons(){
-    let list = await fetch(nextPokemonList);
-    for (let i = 0; i < list.results.length; i++) {
-        let pokemon = await (await fetch(results[i].url).json());
-        allPokemons.push(pokemon);
-
-        nextPokemonList = list.next;
-    }
+    document.scrollingElement.scroll(0, 1)
 }
-
-
-async function onScroll() {
-    if(bottomPageReached && !loading){
-        loading = true;
-        await loadNextPokemons();
-        loading = false;
-    }
-
-}
-
-
 /* =========================================================== CLOSE POKEMON CARD ================================================== */
 function closePokemonCard() {
     document.getElementById('bigPokemonCardContainer').classList.remove('display');
@@ -500,18 +517,3 @@ function closePokemonCard() {
 function doNotClose(event) {
     event.stopPropagation();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
