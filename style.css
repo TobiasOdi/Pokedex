@@ -2,10 +2,9 @@
 :root {
     --pokedexRed: hsl(353, 66%, 43%);
     --pokedexGlass: hsla(194, 74%, 81%, 0.502);
-
   }
 
-/* ============================================= ALLGEMEIN ======================================================   */ 
+/* ============================================= GENERAL ======================================================   */ 
 * {
     box-sizing: border-box;
     font-family: 'Acme';
@@ -40,8 +39,6 @@ body {
 }
 
 /* ============================================= MAIN CONTENT ======================================================   */ 
-
-
  .homeScreenContainer {
     position: relative;
     display: flex;
@@ -156,8 +153,6 @@ body {
     object-fit: cover;
     transition: width 1s ease-in-out, height 1s ease-in-out;
  }
-
-
 
 /* ============================================= POKEMONS ======================================================   */ 
 .container {
@@ -297,9 +292,7 @@ body {
     background-image: url(./img/icons/downArrow.svg);   
     background-size: 10px 4px;  
 }
-
 /* ================================================================================== */
-
 
 .pokemonCard {
     cursor: pointer;
@@ -603,7 +596,6 @@ body {
     background-image: url(./img/icons/downArrow.svg);   
     background-size: 10px 4px;  
 } */
-
 /* ================================================================================== */
 
 .infoData > div, .statsData > div, .movesData > div  {
@@ -780,11 +772,3 @@ body {
     width: 25px;
     height: 25px;
 }
-
-/* ============================================= BEISPIEL ======================================================   */ 
-
-/* #pokedex {
-    min-height: 50vh;
-    background-color: rgb(95, 134, 95);
-    color: white;
-} */
