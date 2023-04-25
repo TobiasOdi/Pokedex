@@ -134,7 +134,7 @@ async function renderAllPokemons() {
 
         let currentPokemon = i;
 
-        pokemonName = results[currentPokemon]['name'];
+        pokemonName = results[currentPokemon - 1]['name'];
         pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
         url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
         response2 = await fetch(url2);
@@ -172,9 +172,7 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
             </div>
         </div>
     `;
-
     //<img src="./img/icons/favorite empty.png">
-
 }
 
 /* async function getDataFromEvolutionUrl(currentPokemon) {
@@ -187,6 +185,52 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
     secondEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to'][0]['species']['name']; 
     thirdEvo = overviewStats4['chain']['evolves_to'][0]['evolves_to']['evolves_to']['species']['name'];    
 } */
+
+
+/* =========================================================== SEARCH FUNCTUION ================================================== */
+
+function enterKeyPressed(event) {
+    if (event.keyCode === 13) {
+        search();
+    }
+}
+
+async function search() {   
+    let search = document.getElementById('search').value;
+    search = search.toLowerCase();
+
+    let allPokemons = document.getElementById('allPokemons');
+    allPokemons.innerHTML = '';
+
+    if(search == '') {
+        nextPokemonCounter = 31;
+        currentPokemonCounter = 1;
+        renderAllPokemons();
+    } else {
+
+        for (let i = 1; i < nextPokemonCounter; i++) {
+
+            let currentPokemon = i;
+    
+            pokemonName = results[currentPokemon - 1]['name'];
+            pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
+            url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
+            response2 = await fetch(url2);
+            overviewStats2 = await response2.json();
+            pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
+            type = overviewStats2['types'][0]['type']['name'];  
+            typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
+    
+            if(pokemonName.toLowerCase().includes(search) || type.toLowerCase().includes(search)){
+                allPokemons.innerHTML += smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+                
+                document.getElementById('type' + currentPokemon).classList.add(type);
+                document.getElementById('cardHeader' + currentPokemon).classList.add(type);
+            } 
+        }
+
+    }
+ }
 
 /* =========================================================== OPEN POKEMON CARD ================================================== */
 async function openPokemonCard(currentPokemon) {

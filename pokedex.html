@@ -28,7 +28,7 @@
                     <img src="./img/icons/search.png" class="icon"/>
                     </div>
                     <div>
-                    <input id="search" onkeydown="search()" type="text" placeholder="Search"/>
+                    <input id="search" type="text" placeholder="Search..." onkeypress="return enterKeyPressed(event)"/>
                     </div>
                 </div>
                 <div class="close" onclick="closePokedex()">
@@ -64,10 +64,10 @@
     <div class="subContainer" id="subContainer">
         <div class="upperHalf" id="upperHalf">
             <div class="corner">
-                <img id="corner1" src="./img/top left corner2.png">
+                <img id="corner1" src="./img/top left corner.png">
             </div>
             <div class="corner">
-                <img id="corner2" src="./img/top right corner2.png">
+                <img id="corner2" src="./img/top right corner.png">
             </div>
         </div>
         <div class="startButton" id="startButton" onclick="openPokedex()">
@@ -75,10 +75,10 @@
         </div>
         <div class="lowerHalf" id="lowerHalf">
             <div class="corner">
-                <img id="corner3" src="./img/bottom left corner2.png">
+                <img id="corner3" src="./img/bottom left corner.png">
             </div>
             <div class="corner">
-                <img id="corner4" src="./img/bottom right corner2.png">
+                <img id="corner4" src="./img/bottom right corner.png">
             </div>
         </div>
     </div>
