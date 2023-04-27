@@ -6,6 +6,7 @@ let currentPokemonCounter = 1;
 // Pokemon overview
 let results;
 let indexNumber;
+let indexNumberBig;
 let pokemonName;
 let pokemonNameUpperCase;
 let pokemonImg;
@@ -44,41 +45,57 @@ let loading = false;
 
 /* =========================================================== POKEDEX OPEN/CLOSE ================================================== */
 function openPokedex() {
-    document.getElementById('startButton').classList.add('dNone');
-    document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
-    document.getElementById('pokemonContainer').style.width = '94%';
-    document.getElementById('pokemonContainer').style.height = '90%';
-    document.getElementById('subContainer').style.zIndex = '-1';
-    document.getElementById('shadow').style.animation = 'none';
-    document.getElementById('shadow').style.display = 'none';
-    document.getElementById('corner1').style.height = '50px';
-    document.getElementById('corner1').style.width = '58.5px';
-    document.getElementById('corner2').style.height = '50px';
-    document.getElementById('corner2').style.width = '58.5px';
-    document.getElementById('corner3').style.height = '50px';
-    document.getElementById('corner3').style.width = '58.5px';
-    document.getElementById('corner4').style.height = '50px';
-    document.getElementById('corner4').style.width = '58.5px';
-    document.getElementById('loadNextPokemon').style.display = 'flex';
+    if(window.innerWidth <= 500) {
+        document.getElementById('startButton').classList.add('dNone');
+        document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
+        document.getElementById('subContainer').style.display = 'none';
+        document.getElementById('loadNextPokemon').style.display = 'flex';
+
+    } else {
+        document.getElementById('startButton').classList.add('dNone');
+        document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
+        document.getElementById('pokemonContainer').style.width = '94%';
+        document.getElementById('pokemonContainer').style.height = '90%';
+        document.getElementById('subContainer').style.zIndex = '-1';
+        document.getElementById('shadow').style.animation = 'none';
+        document.getElementById('shadow').style.display = 'none';
+        document.getElementById('corner1').style.height = '50px';
+        document.getElementById('corner1').style.width = '58.5px';
+        document.getElementById('corner2').style.height = '50px';
+        document.getElementById('corner2').style.width = '58.5px';
+        document.getElementById('corner3').style.height = '50px';
+        document.getElementById('corner3').style.width = '58.5px';
+        document.getElementById('corner4').style.height = '50px';
+        document.getElementById('corner4').style.width = '58.5px';
+        document.getElementById('loadNextPokemon').style.display = 'flex';
+    }
 }
 
 function closePokedex() {
-    document.getElementById('startButton').classList.remove('dNone');
-    document.getElementById('homeScreenContainer').classList.remove('homeScreenContainerOpened');
-    document.getElementById('pokemonContainer').style.height = '400px';
-    document.getElementById('pokemonContainer').style.width = '450px';
-    document.getElementById('subContainer').style.zIndex = '1';
-    document.getElementById('shadow').style.animation = 'shrink 3s ease-in-out infinite';
-    document.getElementById('shadow').style.display = 'block';
-    document.getElementById('corner1').style.height = '206px';
-    document.getElementById('corner1').style.width = '241px';
-    document.getElementById('corner2').style.height = '206px';
-    document.getElementById('corner2').style.width = '241px';
-    document.getElementById('corner3').style.height = '206px';
-    document.getElementById('corner3').style.width = '241px';
-    document.getElementById('corner4').style.height = '206px';
-    document.getElementById('corner4').style.width = '241px';
-    document.getElementById('loadNextPokemon').style.display = 'none';
+    if(window.innerWidth <= 500) {
+        document.getElementById('startButton').classList.remove('dNone');
+        document.getElementById('homeScreenContainer').classList.remove('homeScreenContainerOpened');
+        document.getElementById('subContainer').style.zIndex = 'block';
+        document.getElementById('loadNextPokemon').style.display = 'none';
+
+    } else {
+        document.getElementById('startButton').classList.remove('dNone');
+        document.getElementById('homeScreenContainer').classList.remove('homeScreenContainerOpened');
+        document.getElementById('pokemonContainer').style.height = '400px';
+        document.getElementById('pokemonContainer').style.width = '450px';
+        document.getElementById('subContainer').style.zIndex = '1';
+        document.getElementById('shadow').style.animation = 'shrink 3s ease-in-out infinite';
+        document.getElementById('shadow').style.display = 'block';
+        document.getElementById('corner1').style.height = '206px';
+        document.getElementById('corner1').style.width = '241px';
+        document.getElementById('corner2').style.height = '206px';
+        document.getElementById('corner2').style.width = '241px';
+        document.getElementById('corner3').style.height = '206px';
+        document.getElementById('corner3').style.width = '241px';
+        document.getElementById('corner4').style.height = '206px';
+        document.getElementById('corner4').style.width = '241px';
+        document.getElementById('loadNextPokemon').style.display = 'none';
+    }
 }
 
 /* =========================================================== Init Function ================================================== */
@@ -114,7 +131,19 @@ async function renderAllPokemons(overviewStats) {
 async function pokemonSmallCardData1(currentPokemon, results) {
     pokemonName = results[currentPokemon - 1]['name'];
     pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
+    getIndexNumber(currentPokemon);
 }
+
+function getIndexNumber(currentPokemon) {
+    if(currentPokemon < 10) {
+        indexNumber = '000' + currentPokemon.toString();
+        } else if (currentPokemon > 9 && currentPokemon < 100) {
+            indexNumber = '00' + currentPokemon.toString();
+        } else if(currentPokemon > 99 && currentPokemon < 1000) {
+            indexNumber = '0' + currentPokemon.toString(); 
+        }
+}
+
 
 async function pokemonSmallCardData2(overviewStats2) {
     pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
@@ -129,7 +158,7 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
                 <div>
                     <div class="favorite">
                     </div>
-                    <div class="indexNumber"># <span>${currentPokemon}</span></div>
+                    <div class="indexNumber"># <span>${indexNumber}</span></div>
                 </div>
                 <div class="pokemonImg">
                     <img src="${pokemonImg}">
@@ -165,8 +194,7 @@ async function search() {
     if(search == '') {
         searchEmpty();
     } else {
-
-        for (let i = 1; i < nextPokemonCounter; i++) {
+        for (let i = 1; i < results.length; i++) {
             let currentPokemon = i;
     
             pokemonName = results[currentPokemon - 1]['name'];
@@ -175,9 +203,11 @@ async function search() {
             let response2 = await fetch(url2);
             let overviewStats2 = await response2.json();
             pokemonSmallCardData2(overviewStats2);
+            getIndexNumber(currentPokemon);
     
             if(pokemonName.toLowerCase().includes(search) || type.toLowerCase().includes(search)){
                 containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+
             } 
         }
     }
@@ -232,6 +262,17 @@ function bigPokemonCardData1(currentPokemon, overviewStats) {
     let results = overviewStats['results'];
     pokemonName = results[currentPokemon-1]['name'];
     pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
+    getIndexNumberBig(currentPokemon);
+}
+
+function getIndexNumberBig(currentPokemon) {
+    if(currentPokemon < 10) {
+        indexNumberBig = '000' + currentPokemon.toString();
+        } else if (currentPokemon > 9 && currentPokemon < 100) {
+        indexNumberBig = '00' + currentPokemon.toString();
+        } else if(currentPokemon > 99 && currentPokemon < 1000) {
+        indexNumberBig = '0' + currentPokemon.toString(); 
+        }
 }
 
 function bigPokemonCardData2(currentPokemon, overviewStats2) {
@@ -266,7 +307,7 @@ return /*html*/ `
             <div>
                 <div class="favorite">
                 </div>
-                <div class="indexNumberBig"><span># ${currentPokemon}</span></div>
+                <div class="indexNumberBig"><span># ${indexNumberBig}</span></div>
             </div>
             <div class="pokemonImgBig">
                 <img src="${pokemonImg}">
@@ -532,7 +573,7 @@ function showMoves() {
 
 async function loadNextPokemon() {
 
-    if(loading) {
+    if(!loading) {
         loading = true;
         await init();
         document.scrollingElement.scroll(0, 1)
