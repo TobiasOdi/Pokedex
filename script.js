@@ -50,12 +50,49 @@ function openPokedex() {
         document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
         document.getElementById('subContainer').style.display = 'none';
         document.getElementById('loadNextPokemon').style.display = 'flex';
+        document.getElementById('subContainer').style.display = 'none';
+
+    } else if(window.innerWidth <= 1050) {
+        document.getElementById('startButton').classList.add('dNone');
+        document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
+        document.getElementById('pokemonContainer').style.width = '88%';
+        document.getElementById('pokemonContainer').style.height = '88%';
+        document.getElementById('subContainer').style.zIndex = '-1';
+        document.getElementById('shadow').style.animation = 'none';
+        document.getElementById('shadow').style.display = 'none';
+        document.getElementById('corner1').style.height = '50px';
+        document.getElementById('corner1').style.width = '58.5px';
+        document.getElementById('corner2').style.height = '50px';
+        document.getElementById('corner2').style.width = '58.5px';
+        document.getElementById('corner3').style.height = '50px';
+        document.getElementById('corner3').style.width = '58.5px';
+        document.getElementById('corner4').style.height = '50px';
+        document.getElementById('corner4').style.width = '58.5px';
+        document.getElementById('loadNextPokemon').style.display = 'flex';
+
+    } else if (window.innerWidth <= 700) {
+        document.getElementById('startButton').classList.add('dNone');
+        document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
+        document.getElementById('pokemonContainer').style.width = '80%';
+        document.getElementById('pokemonContainer').style.height = '88%';
+        document.getElementById('subContainer').style.zIndex = '-1';
+        document.getElementById('shadow').style.animation = 'none';
+        document.getElementById('shadow').style.display = 'none';
+        document.getElementById('corner1').style.height = '50px';
+        document.getElementById('corner1').style.width = '58.5px';
+        document.getElementById('corner2').style.height = '50px';
+        document.getElementById('corner2').style.width = '58.5px';
+        document.getElementById('corner3').style.height = '50px';
+        document.getElementById('corner3').style.width = '58.5px';
+        document.getElementById('corner4').style.height = '50px';
+        document.getElementById('corner4').style.width = '58.5px';
+        document.getElementById('loadNextPokemon').style.display = 'flex';
 
     } else {
         document.getElementById('startButton').classList.add('dNone');
         document.getElementById('homeScreenContainer').classList.add('homeScreenContainerOpened');
-        document.getElementById('pokemonContainer').style.width = '94%';
-        document.getElementById('pokemonContainer').style.height = '90%';
+        document.getElementById('pokemonContainer').style.width = '92%';
+        document.getElementById('pokemonContainer').style.height = '88%';
         document.getElementById('subContainer').style.zIndex = '-1';
         document.getElementById('shadow').style.animation = 'none';
         document.getElementById('shadow').style.display = 'none';
@@ -77,6 +114,8 @@ function closePokedex() {
         document.getElementById('homeScreenContainer').classList.remove('homeScreenContainerOpened');
         document.getElementById('subContainer').style.zIndex = 'block';
         document.getElementById('loadNextPokemon').style.display = 'none';
+        document.getElementById('subContainer').style.display = 'flex';
+
 
     } else {
         document.getElementById('startButton').classList.remove('dNone');
@@ -156,7 +195,7 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
         <div class="pokemonCard" onclick="openPokemonCard(${currentPokemon})">
             <div id="cardHeader${currentPokemon}" class="cardHeader">
                 <div>
-                    <div class="favorite">
+                    <div class="closePokemonCard">
                     </div>
                     <div class="indexNumber"># <span>${indexNumber}</span></div>
                 </div>
@@ -305,7 +344,10 @@ return /*html*/ `
     <div id="bigPokemonCard" class="bigPokemonCard" onclick="doNotClose(event)">
         <div id="cardHeaderBig${currentPokemon}" class="cardHeader cardHeaderBig">
             <div>
-                <div class="favorite">
+                <div class="closePokemonCard" onclick="closePokemonCard()">
+                    <div>
+                        <span>x</span>
+                    </div>
                 </div>
                 <div class="indexNumberBig"><span># ${indexNumberBig}</span></div>
             </div>

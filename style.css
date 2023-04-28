@@ -347,11 +347,29 @@ body {
     width: 100%;
 }
 
-.favorite {
+.closePokemonCard {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: grey;
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+}
+
+.closePokemonCard:hover {
+    scale: 1.1;
+}
+
+.closePokemonCard > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.closePokemonCard span {
+    font-size: 2rem;
+    color: white;
+    -webkit-text-stroke: 0.5px black;
 }
 
 .favorite > img {
@@ -789,7 +807,6 @@ body {
 }
 
 /* =================================== RESPONSIVENESS ========================================== */
-
 @media(max-width: 720px) {
     .close {
         width: 50px;
@@ -829,17 +846,17 @@ body {
 
 @media(max-width: 500px) {
     .subContainer {
-        width: 100%;
+        width: 95%;
+        height: 95%;
     }
-    .corner {
-        width: 50%;
-    }
+    
     .corner > img {
         width: 100%;
         height: auto;
     }
     .pokemonContainer {
-        width: 100%;
+        width: 90%;
+        height: 90%;
     }
     .homeScreenContainer {
         animation: none;
@@ -849,3 +866,14 @@ body {
         display: none;
     }
 }
+
+@media(max-width: 400px) {
+    .bigPokemonCard {
+        width: 90%;
+    }
+
+
+}
+
+
+
