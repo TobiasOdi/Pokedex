@@ -142,7 +142,7 @@ async function init() {
     let url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
     let response = await fetch(url);
     let overviewStats = await response.json();
-    renderAllPokemons(overviewStats);
+    await renderAllPokemons(overviewStats);
 }
 
 /* =========================================================== RENDER ALL POKEMONS ================================================== */
@@ -212,6 +212,10 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
     //<img src="./img/icons/favorite empty.png">
 }
 
+function backToMainPage() {
+    location.reload();
+}
+
 /* =========================================================== SEARCH FUNCTION ================================================== */
 function enterKeyPressed(event) {
     if (event.keyCode === 13) {
@@ -224,6 +228,9 @@ async function search() {
     let response = await fetch(url);
     let overviewStats = await response.json();
     let results = overviewStats['results'];
+
+    nextPokemonCounter = results.length;
+    currentPokemonCounter = 1;
 
     let search = document.getElementById('search').value;
     search = search.toLowerCase();
@@ -263,7 +270,6 @@ function containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCa
     document.getElementById('type' + currentPokemon).classList.add(type);
     document.getElementById('cardHeader' + currentPokemon).classList.add(type);
 }
-
 
 /* =========================================================== OPEN POKEMON CARD ================================================== */
 async function openPokemonCard(currentPokemon) {
@@ -614,7 +620,6 @@ function showMoves() {
 /* =========================================================== LOAD MORE POKEMON ================================================== */
 
 async function loadNextPokemon() {
-
     if(!loading) {
         loading = true;
         await init();

@@ -214,6 +214,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
+}
+
+.logoSmall:hover {
+    scale: 1.1;
 }
 
 .logoSmall img {
