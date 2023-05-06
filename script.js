@@ -42,6 +42,7 @@ let moves;
 
 // Load next Pokemon
 let loading = false;
+let loadingSearch = false;
 
 /* =========================================================== POKEDEX OPEN/CLOSE ================================================== */
 function openPokedex() {
@@ -157,7 +158,7 @@ async function renderAllPokemons(overviewStats) {
         let url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
         let response2 = await fetch(url2);
         let overviewStats2 = await response2.json();
-        pokemonSmallCardData2(overviewStats2);
+        pokemonSmallCardData2(currentPokemon, overviewStats2);
 
         allPokemons.innerHTML += smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
         document.getElementById('type' + currentPokemon).classList.add(type);
@@ -180,12 +181,17 @@ function getIndexNumber(currentPokemon) {
             indexNumber = '00' + currentPokemon.toString();
         } else if(currentPokemon > 99 && currentPokemon < 1000) {
             indexNumber = '0' + currentPokemon.toString(); 
+        } else if(currentPokemon >= 1000) {
+            indexNumber = currentPokemon.toString();
         }
 }
 
-
-async function pokemonSmallCardData2(overviewStats2) {
-    pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
+async function pokemonSmallCardData2(currentPokemon, overviewStats2) {
+    if(currentPokemon < 650) {
+        pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
+    } else {
+        pokemonImg = overviewStats2['sprites']['other']['official-artwork']['front_shiny'];
+    }
     type = overviewStats2['types'][0]['type']['name'];  
     typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
 }
@@ -209,7 +215,6 @@ function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCa
             </div>
         </div>
     `;
-    //<img src="./img/icons/favorite empty.png">
 }
 
 function backToMainPage() {
@@ -217,10 +222,15 @@ function backToMainPage() {
 }
 
 /* =========================================================== SEARCH FUNCTION ================================================== */
-function enterKeyPressed(event) {
-    if (event.keyCode === 13) {
-        search();
-    }
+async function enterKeyPressed(event) {
+    document.getElementById('loader-wrapper').style.display = "block";
+    if(!loadingSearch)
+        loadingSearch = true;
+        if (event.keyCode === 13) {
+            await search();
+        }
+        document.getElementById('loader-wrapper').style.display = "none";
+        loadingSearch = false;
 }
 
 async function search() { 
@@ -229,7 +239,7 @@ async function search() {
     let overviewStats = await response.json();
     let results = overviewStats['results'];
 
-    nextPokemonCounter = results.length;
+    nextPokemonCounter = 1011;
     currentPokemonCounter = 1;
 
     let search = document.getElementById('search').value;
@@ -240,24 +250,24 @@ async function search() {
     if(search == '') {
         searchEmpty();
     } else {
-        for (let i = 1; i < results.length; i++) {
+
+        for (let i = 1; i < 1011; i++) {
             let currentPokemon = i;
-    
+            
             pokemonName = results[currentPokemon - 1]['name'];
             pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
             let url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
             let response2 = await fetch(url2);
             let overviewStats2 = await response2.json();
-            pokemonSmallCardData2(overviewStats2);
+            pokemonSmallCardData2(currentPokemon, overviewStats2);
             getIndexNumber(currentPokemon);
     
             if(pokemonName.toLowerCase().includes(search) || type.toLowerCase().includes(search)){
                 containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
-
             } 
         }
     }
- }
+}
 
  function searchEmpty() {
     nextPokemonCounter = 31;
@@ -273,7 +283,6 @@ function containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCa
 
 /* =========================================================== OPEN POKEMON CARD ================================================== */
 async function openPokemonCard(currentPokemon) {
-
     let url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
     let response = await fetch(url);
     let overviewStats = await response.json();
@@ -287,20 +296,7 @@ async function openPokemonCard(currentPokemon) {
     let url3 = `https://pokeapi.co/api/v2/pokemon-species/${currentPokemon}/`; 
     let response3 = await fetch(url3);
     let overviewStats3 = await response3.json();
-    spicies = overviewStats3['genera'][7]['genus']; 
- 
-    let url4 = `https://pokeapi.co/api/v2/evolution-chain/${currentPokemon}/`; 
-    let response4 = await fetch(url4);
-    let overviewStats4 = await response4.json();
-
-    let pokemon = document.getElementById('bigPokemonCardContainer');
-    pokemon.innerHTML = '';
-    pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
-    calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed);
-    renderMoves(moves);
-    renderAbilities(abilities);
-    pokemon.classList.add('display');
-    addType(currentPokemon, type);
+    bigPokemonCardData3(currentPokemon, overviewStats3);
 }
 
 function bigPokemonCardData1(currentPokemon, overviewStats) {
@@ -321,7 +317,12 @@ function getIndexNumberBig(currentPokemon) {
 }
 
 function bigPokemonCardData2(currentPokemon, overviewStats2) {
-    pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
+    if(currentPokemon < 650) {
+        pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
+    } else {
+        pokemonImg = overviewStats2['sprites']['other']['official-artwork']['front_shiny'];
+    }
+
     type = overviewStats2['types'][0]['type']['name'];  
     typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
     height = overviewStats2['height'];
@@ -337,6 +338,19 @@ function bigPokemonCardData2(currentPokemon, overviewStats2) {
     specialDefense = overviewStats2['stats'][4]['base_stat'];
     speed = overviewStats2['stats'][5]['base_stat'];
 }
+
+function bigPokemonCardData3(currentPokemon, overviewStats3) {
+    spicies = overviewStats3['genera'][7]['genus']; 
+     let pokemon = document.getElementById('bigPokemonCardContainer');
+    pokemon.innerHTML = '';
+    pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
+    calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed);
+    renderMoves(moves);
+    renderAbilities(abilities);
+    pokemon.classList.add('display');
+    addType(currentPokemon, type);
+}
+
 
 function addType(currentPokemon, type){
     document.getElementById('typeBig' + currentPokemon).classList.add(type);
@@ -555,17 +569,26 @@ function speedProgressBar(speed) {
 
 function renderMoves(moves) {
     let movesContainer = document.getElementById('moves');
-
-    for (let i = 0; i < 10; i++) {
-        
-        let move = moves[i]['move']['name'];
-
-        movesContainer.innerHTML += /*html*/ `
-            <div>
-                <div>${i+1}.</div>
-                <div>${move}</div>
-            </div>
-        `;
+    if(moves.length < 15) {
+        for (let i = 0; i < moves.length; i++) {
+            let move = moves[i]['move']['name'];
+            movesContainer.innerHTML += /*html*/ `
+                <div>
+                    <div>${i+1}.</div>
+                    <div>${move}</div>
+                </div>
+            `;
+        }
+    } else {
+        for (let i = 0; i < 15; i++) {
+            let move = moves[i]['move']['name'];
+            movesContainer.innerHTML += /*html*/ `
+                <div>
+                    <div>${i+1}.</div>
+                    <div>${move}</div>
+                </div>
+            `;
+        }
     }
 }
 
@@ -573,13 +596,10 @@ function renderMoves(moves) {
 function showInfo() {
     document.getElementById('statsContent').classList.add('dNone');
     document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('movesContent').classList.add('dNone');
     document.getElementById('movesContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('infoContent').classList.remove('dNone');
     document.getElementById('infoContentContainer').classList.add('contentContainerBackground');
-
     document.getElementById('infoTitle').style.color = 'black';
     document.getElementById('statsTitle').style.color = 'white';
     document.getElementById('movesTitle').style.color = 'white';
@@ -589,13 +609,10 @@ function showInfo() {
 function showStats() {
     document.getElementById('infoContent').classList.add('dNone');
     document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('movesContent').classList.add('dNone');
     document.getElementById('movesContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('statsContent').classList.remove('dNone');
     document.getElementById('statsContentContainer').classList.add('contentContainerBackground');
-
     document.getElementById('infoTitle').style.color = 'white';
     document.getElementById('statsTitle').style.color = 'black';
     document.getElementById('movesTitle').style.color = 'white';
@@ -605,13 +622,10 @@ function showStats() {
 function showMoves() {
     document.getElementById('infoContent').classList.add('dNone');
     document.getElementById('infoContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('statsContent').classList.add('dNone');
     document.getElementById('statsContentContainer').classList.remove('contentContainerBackground');
-
     document.getElementById('movesContent').classList.remove('dNone');
     document.getElementById('movesContentContainer').classList.add('contentContainerBackground');
-
     document.getElementById('infoTitle').style.color = 'white';
     document.getElementById('statsTitle').style.color = 'white';
     document.getElementById('movesTitle').style.color = 'black';
@@ -620,11 +634,15 @@ function showMoves() {
 /* =========================================================== LOAD MORE POKEMON ================================================== */
 
 async function loadNextPokemon() {
+    document.getElementById('loadIcon').style.display = "none";
+    document.getElementById('loader-wrapper-next-pokemon').style.display = "block";
     if(!loading) {
         loading = true;
         await init();
         document.scrollingElement.scroll(0, 1)
         loading = false;
+        document.getElementById('loadIcon').style.display = "block";
+        document.getElementById('loader-wrapper-next-pokemon').style.display = "none";
     }
 }
 

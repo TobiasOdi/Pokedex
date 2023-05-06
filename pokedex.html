@@ -28,7 +28,14 @@
                         <img src="./img/icons/search.png" class="icon"/>
                     </div>
                     <div>
-                    <input id="search" type="text" placeholder="Search by name or type..." onkeypress="return enterKeyPressed(event)"/>
+                        <input id="search" type="text" placeholder="Search by name or type..." onkeypress="return enterKeyPressed(event)"/>
+                    </div>
+                </div>
+                <div id="loader-wrapper" class="loader-wrapper">
+                    <div class="loader loader-outer">
+                        <div class="loader loader-inner">
+                            
+                        </div>
                     </div>
                 </div>
                 <div class="logoSmall" onclick="backToMainPage()">
@@ -51,6 +58,7 @@
 
     <div class="subContainer" id="subContainer">
         <div class="upperHalf" id="upperHalf">
+            <img class="upperHalfImg" src="./img/upperhalf1.png">
             <div class="corner">
                 <img id="corner1" src="./img/top left corner.png">
             </div>
@@ -62,6 +70,7 @@
             <img src="./img/icons/pokeball.png">
         </div>
         <div class="lowerHalf" id="lowerHalf">
+            <img class="lowerHalfImg" src="./img/lowerhalf1.png">
             <div class="corner">
                 <img id="corner3" src="./img/bottom left corner.png">
             </div>
@@ -86,9 +95,18 @@
 <!-- ==================== LOAD NEXT POKEMON BUTTON ======================== -->
 <div id="loadNextPokemon" class="loadNextPokemon" onclick="loadNextPokemon()">
     <div>Load next Pokémon</div>
-    <img src="./img/icons/pokeball.png">
+    <img id="loadIcon" src="./img/icons/pokeball.png">
+    <div id="loader-wrapper-next-pokemon" class="loader-wrapper">
+        <div class="loader loader-outer">
+            <div class="loader loader-inner">
+                
+            </div>
+        </div>
+    </div>
 </div>
 
-    <script src="script.js"></script>
+<!-- ======================== LOADING ANIMATION ============================ -->
+
+   <script src="script.js"></script>
 </body>
 </html>
