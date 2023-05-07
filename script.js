@@ -246,6 +246,9 @@ async function search() {
     search = search.toLowerCase();
     let allPokemons = document.getElementById('allPokemons');
     allPokemons.innerHTML = '';
+    document.getElementById('searchIcon').src = "./img/icons/close.png";
+    document.getElementById('searchIcon').style.cursor = "pointer";
+
 
     if(search == '') {
         searchEmpty();
@@ -270,6 +273,9 @@ async function search() {
 }
 
  function searchEmpty() {
+    document.getElementById('searchIcon').src = "./img/icons/search.png";
+    document.getElementById('search').value = "";
+    allPokemons.innerHTML = "";
     nextPokemonCounter = 31;
     currentPokemonCounter = 1;
     init();
