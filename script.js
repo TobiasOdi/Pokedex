@@ -153,17 +153,25 @@ async function renderAllPokemons(overviewStats) {
 
     for (let i = currentPokemonCounter; i < nextPokemonCounter; i++) {
         let currentPokemon = i;
-        pokemonSmallCardData1(currentPokemon, results);
+        await pokemonSmallCardData1(currentPokemon, results);
 
         let url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
         let response2 = await fetch(url2);
         let overviewStats2 = await response2.json();
-        pokemonSmallCardData2(currentPokemon, overviewStats2);
+        await pokemonSmallCardData2(currentPokemon, overviewStats2);
 
-        allPokemons.innerHTML += smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
-        document.getElementById('type' + currentPokemon).classList.add(type);
-        document.getElementById('cardHeader' + currentPokemon).classList.add(type);
+        allPokemons.innerHTML += await smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+        setPokemonType(currentPokemon);
     }
+    await setCounters();
+}
+
+async function setPokemonType(currentPokemon) {
+    document.getElementById('type' + currentPokemon).classList.add(type);
+    document.getElementById('cardHeader' + currentPokemon).classList.add(type);
+}
+
+async function setCounters() {
     currentPokemonCounter = currentPokemonCounter + 30;
     nextPokemonCounter = nextPokemonCounter + 30;
 }
@@ -171,10 +179,10 @@ async function renderAllPokemons(overviewStats) {
 async function pokemonSmallCardData1(currentPokemon, results) {
     pokemonName = results[currentPokemon - 1]['name'];
     pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
-    getIndexNumber(currentPokemon);
+    await getIndexNumber(currentPokemon);
 }
 
-function getIndexNumber(currentPokemon) {
+async function getIndexNumber(currentPokemon) {
     if(currentPokemon < 10) {
         indexNumber = '000' + currentPokemon.toString();
         } else if (currentPokemon > 9 && currentPokemon < 100) {
@@ -196,9 +204,9 @@ async function pokemonSmallCardData2(currentPokemon, overviewStats2) {
     typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
 }
 
-function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
+async function smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
     return /*html*/ `
-        <div class="pokemonCard" onclick="openPokemonCard(${currentPokemon})">
+        <div class="pokemonCard" onclick="openPokemonCard(${currentPokemon}, '${pokemonImg}', '${pokemonNameUpperCase}', '${typeUpperCase}')">
             <div id="cardHeader${currentPokemon}" class="cardHeader">
                 <div>
                     <div class="closePokemonCard">
@@ -239,21 +247,11 @@ async function search() {
     let overviewStats = await response.json();
     let results = overviewStats['results'];
 
-    nextPokemonCounter = 1011;
-    currentPokemonCounter = 1;
-
-    let search = document.getElementById('search').value;
-    search = search.toLowerCase();
-    let allPokemons = document.getElementById('allPokemons');
-    allPokemons.innerHTML = '';
-    document.getElementById('searchIcon').src = "./img/icons/close.png";
-    document.getElementById('searchIcon').style.cursor = "pointer";
-
+    setSearchValues();
 
     if(search == '') {
         searchEmpty();
     } else {
-
         for (let i = 1; i < 1011; i++) {
             let currentPokemon = i;
             
@@ -262,57 +260,62 @@ async function search() {
             let url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
             let response2 = await fetch(url2);
             let overviewStats2 = await response2.json();
-            pokemonSmallCardData2(currentPokemon, overviewStats2);
-            getIndexNumber(currentPokemon);
+            await pokemonSmallCardData2(currentPokemon, overviewStats2);
+            await getIndexNumber(currentPokemon);
     
             if(pokemonName.toLowerCase().includes(search) || type.toLowerCase().includes(search)){
-                containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+                await containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
             } 
-        }
+        };
     }
 }
 
- function searchEmpty() {
+function setSearchValues() {
+    currentPokemonCounter = 1;
+    nextPokemonCounter = 1011;
+
+    let search = document.getElementById('search').value;
+    search = search.toLowerCase();
+    let allPokemons = document.getElementById('allPokemons');
+    allPokemons.innerHTML = '';
+    document.getElementById('searchIcon').src = "./img/icons/close.png";
+    document.getElementById('searchIcon').style.cursor = "pointer";
+}
+
+async function searchEmpty() {
     document.getElementById('searchIcon').src = "./img/icons/search.png";
     document.getElementById('search').value = "";
     allPokemons.innerHTML = "";
-    nextPokemonCounter = 31;
     currentPokemonCounter = 1;
-    init();
- }
+    nextPokemonCounter = 31;
+    await init();
+}
 
-function containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
-    allPokemons.innerHTML += smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
+async function containsSearchParameters(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
+    allPokemons.innerHTML += await smallPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
     document.getElementById('type' + currentPokemon).classList.add(type);
     document.getElementById('cardHeader' + currentPokemon).classList.add(type);
 }
 
 /* =========================================================== OPEN POKEMON CARD ================================================== */
-async function openPokemonCard(currentPokemon) {
-    let url = `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
-    let response = await fetch(url);
-    let overviewStats = await response.json();
-    bigPokemonCardData1(currentPokemon, overviewStats);
+
+// pokemonImg, pokemonNameUpperCase, typeUpperCase
+
+async function openPokemonCard(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
+    await getIndexNumberBig(currentPokemon);
 
     let url2 = `https://pokeapi.co/api/v2/pokemon/${currentPokemon}/`; 
     let response2 = await fetch(url2);
     let overviewStats2 = await response2.json();
-    bigPokemonCardData2(currentPokemon, overviewStats2);
+    await bigPokemonCardData2(currentPokemon, overviewStats2);
     
     let url3 = `https://pokeapi.co/api/v2/pokemon-species/${currentPokemon}/`; 
     let response3 = await fetch(url3);
     let overviewStats3 = await response3.json();
-    bigPokemonCardData3(currentPokemon, overviewStats3);
+    await bigPokemonCardData3(currentPokemon, overviewStats3, pokemonImg, pokemonNameUpperCase, typeUpperCase);
 }
 
-function bigPokemonCardData1(currentPokemon, overviewStats) {
-    let results = overviewStats['results'];
-    pokemonName = results[currentPokemon-1]['name'];
-    pokemonNameUpperCase = pokemonName.charAt(0).toUpperCase() + pokemonName.slice(1);
-    getIndexNumberBig(currentPokemon);
-}
-
-function getIndexNumberBig(currentPokemon) {
+async function getIndexNumberBig(currentPokemon) {
     if(currentPokemon < 10) {
         indexNumberBig = '000' + currentPokemon.toString();
         } else if (currentPokemon > 9 && currentPokemon < 100) {
@@ -322,15 +325,17 @@ function getIndexNumberBig(currentPokemon) {
         }
 }
 
-function bigPokemonCardData2(currentPokemon, overviewStats2) {
+async function bigPokemonCardData2(currentPokemon, overviewStats2) {
     if(currentPokemon < 650) {
         pokemonImg = overviewStats2['sprites']['other']['dream_world']['front_default'];
     } else {
         pokemonImg = overviewStats2['sprites']['other']['official-artwork']['front_shiny'];
     }
 
-    type = overviewStats2['types'][0]['type']['name'];  
-    typeUpperCase = type.charAt(0).toUpperCase() + type.slice(1);
+    stats(overviewStats2);
+}
+
+function stats(overviewStats2) {
     height = overviewStats2['height'];
     height = height / 10;
     weight = overviewStats2['weight'];  
@@ -345,27 +350,27 @@ function bigPokemonCardData2(currentPokemon, overviewStats2) {
     speed = overviewStats2['stats'][5]['base_stat'];
 }
 
-function bigPokemonCardData3(currentPokemon, overviewStats3) {
+async function bigPokemonCardData3(currentPokemon, overviewStats3, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
     spicies = overviewStats3['genera'][7]['genus']; 
-     let pokemon = document.getElementById('bigPokemonCardContainer');
+    let pokemon = document.getElementById('bigPokemonCardContainer');
     pokemon.innerHTML = '';
-    pokemon.innerHTML += bigPokemonCardTemplate(currentPokemon);
+    pokemon.innerHTML += await bigPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase);
     calculateProgressBar(hp, attack, defense, specialAttack, specialDefense, speed);
     renderMoves(moves);
     renderAbilities(abilities);
     pokemon.classList.add('display');
-    addType(currentPokemon, type);
+    await addType(currentPokemon, typeUpperCase.toLowerCase());
 }
 
 
-function addType(currentPokemon, type){
+async function addType(currentPokemon, type){
     document.getElementById('typeBig' + currentPokemon).classList.add(type);
     document.getElementById('cardHeaderBig' + currentPokemon).classList.add(type);
     document.getElementById('pokemonDataContainer').classList.add(type);
     document.getElementById('bigPokemonCard').classList.add(type);
 }
 
-function bigPokemonCardTemplate(currentPokemon) {
+async function bigPokemonCardTemplate(currentPokemon, pokemonImg, pokemonNameUpperCase, typeUpperCase) {
 return /*html*/ `
     <div id="bigPokemonCard" class="bigPokemonCard" onclick="doNotClose(event)">
         <div id="cardHeaderBig${currentPokemon}" class="cardHeader cardHeaderBig">
@@ -506,7 +511,6 @@ return /*html*/ `
         </div> 
     </div>
 `;
-// <img src="./img/icons/favorite empty.png">
 }
 
 function renderAbilities(abilities) {
@@ -577,25 +581,23 @@ function renderMoves(moves) {
     let movesContainer = document.getElementById('moves');
     if(moves.length < 15) {
         for (let i = 0; i < moves.length; i++) {
-            let move = moves[i]['move']['name'];
-            movesContainer.innerHTML += /*html*/ `
-                <div>
-                    <div>${i+1}.</div>
-                    <div>${move}</div>
-                </div>
-            `;
+            movesTemplate(moves, i, movesContainer);
         }
     } else {
         for (let i = 0; i < 15; i++) {
-            let move = moves[i]['move']['name'];
-            movesContainer.innerHTML += /*html*/ `
-                <div>
-                    <div>${i+1}.</div>
-                    <div>${move}</div>
-                </div>
-            `;
+            movesTemplate(moves, i, movesContainer);
         }
     }
+}
+
+function movesTemplate(moves, i, movesContainer) {
+    let move = moves[i]['move']['name'];
+    movesContainer.innerHTML += /*html*/ `
+        <div>
+            <div>${i+1}.</div>
+            <div>${move}</div>
+        </div>
+    `;
 }
 
 /* =========================================================== RENDER INFO ================================================== */
