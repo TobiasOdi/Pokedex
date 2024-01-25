@@ -247,7 +247,15 @@ async function search() {
     let overviewStats = await response.json();
     let results = overviewStats['results'];
 
-    setSearchValues();
+    currentPokemonCounter = 1;
+    nextPokemonCounter = 1011;
+
+    let search = document.getElementById('search').value;
+    search = search.toLowerCase();
+    let allPokemons = document.getElementById('allPokemons');
+    allPokemons.innerHTML = '';
+    document.getElementById('searchIcon').src = "./img/icons/close.png";
+    document.getElementById('searchIcon').style.cursor = "pointer";
 
     if(search == '') {
         searchEmpty();
@@ -270,7 +278,7 @@ async function search() {
     }
 }
 
-function setSearchValues() {
+/*function setSearchValues() {
     currentPokemonCounter = 1;
     nextPokemonCounter = 1011;
 
@@ -280,7 +288,7 @@ function setSearchValues() {
     allPokemons.innerHTML = '';
     document.getElementById('searchIcon').src = "./img/icons/close.png";
     document.getElementById('searchIcon').style.cursor = "pointer";
-}
+} */
 
 async function searchEmpty() {
     document.getElementById('searchIcon').src = "./img/icons/search.png";
